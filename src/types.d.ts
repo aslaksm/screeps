@@ -3,8 +3,10 @@
 // memory extension samples
 interface CreepMemory {
   role: string;
-  room: string;
-  working: boolean;
+  room?: string;
+  working?: boolean;
+  building?: boolean;
+  upgrading?: boolean;
 }
 
 interface Memory {
@@ -18,3 +20,5 @@ declare namespace NodeJS {
     log: any;
   }
 }
+
+type StorageStructure = StructureExtension | StructureContainer | StructureSpawn | StructureTower;

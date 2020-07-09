@@ -1,0 +1,3 @@
+Balancing function
+
+If all storages are full, move some creeps over to work?
