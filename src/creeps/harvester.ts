@@ -1,11 +1,11 @@
 import { findCreepsByRole, getCurTime } from "./utils";
-import { Roles } from "./types";
+import { Role } from "./types";
 
-export const findHarvesters = () => findCreepsByRole(Roles.HARVESTER);
+export const findHarvesters = () => findCreepsByRole(Role.HARVESTER);
 
 export const spawnHarvester = (spawn: StructureSpawn) => {
   const name = getCurTime();
-  const status = spawn.spawnCreep([WORK, MOVE, CARRY], name, { memory: { role: Roles.HARVESTER } });
+  const status = spawn.spawnCreep([WORK, MOVE, CARRY], name, { memory: { role: Role.HARVESTER } });
   console.log(status);
 };
 

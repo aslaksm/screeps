@@ -1,4 +1,4 @@
-export enum Roles {
+export enum Role {
   HARVESTER = "harvester",
   BUILDER = "builder",
   UPGRADER = "upgrader"

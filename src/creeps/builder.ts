@@ -1,13 +1,13 @@
 import { findCreepsByRole, getCurTime } from "./utils";
-import { Roles } from "./types";
+import { Role } from "./types";
 
-export const findBuilders = () => findCreepsByRole(Roles.BUILDER);
+export const findBuilders = () => findCreepsByRole(Role.BUILDER);
 
 export const spawnBuilder = (spawn: StructureSpawn) => {
   const name = getCurTime();
   const status = spawn.spawnCreep([WORK, MOVE, CARRY], name, {
     memory: {
-      role: Roles.BUILDER,
+      role: Role.BUILDER,
       building: false
     }
   });

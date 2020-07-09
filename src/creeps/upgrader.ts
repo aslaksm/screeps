@@ -1,13 +1,13 @@
 import { findCreepsByRole, getCurTime } from "./utils";
-import { Roles } from "./types";
+import { Role } from "./types";
 
-export const findUpgraders = () => findCreepsByRole(Roles.UPGRADER);
+export const findUpgraders = () => findCreepsByRole(Role.UPGRADER);
 
 export const spawnUpgrader = (spawn: StructureSpawn) => {
   const name = getCurTime();
   const status = spawn.spawnCreep([WORK, MOVE, CARRY], name, {
     memory: {
-      role: Roles.UPGRADER,
+      role: Role.UPGRADER,
       upgrading: false
     }
   });
