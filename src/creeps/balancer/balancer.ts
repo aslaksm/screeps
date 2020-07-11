@@ -37,7 +37,7 @@ export const rebalanceCreeps = () => {
   );
 
   if (criticalRoles.length) {
-    const creepsPerRole = totalCreeps / criticalRoles.length;
+    const creepsPerRole = Math.floor(totalCreeps / criticalRoles.length);
     const buckets = _.chunk(findAllCreeps(), creepsPerRole);
     buckets.forEach((creeps, idx) =>
       creeps.map((creep) => (creep.memory.role = criticalRoles[idx][0]))

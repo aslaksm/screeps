@@ -66,7 +66,7 @@ export const getSpawnCapacity = (spawn: StructureSpawn, room: Room) => {
 
 export const getFirstRoom = () => Object.values(Game.rooms)[0];
 
-// Should be able to do this using a reduce
+// Should be able to do this using a reduce/iterate whatever
 export const repeatArray = <T>(array: T[], times: number) => {
   let newArray: T[] = [];
   _.times(times, () => (newArray = newArray.concat(array)));

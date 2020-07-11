@@ -1,5 +1,5 @@
 import { ErrorMapper } from 'utils/ErrorMapper';
-import { updateHarvester, spawnHarvester, findHarvesters } from 'creeps/roles/harvester';
+import { updateHarvester, findHarvesters } from 'creeps/roles/harvester';
 import { findBuilders, updateBuilder } from 'creeps/roles/builder';
 import { findUpgraders, updateUpgrader } from 'creeps/roles/upgrader';
 import {
@@ -9,8 +9,8 @@ import {
   getFirstRoom,
   spawnCreep
 } from 'creeps/utils';
-import { monitorStatus, rebalanceCreeps, setRoleStatus } from 'creeps/balancer/balancer';
-import { Priority, Role, Size } from 'creeps/roles/types';
+import { monitorStatus, rebalanceCreeps } from 'creeps/balancer/balancer';
+import { Role, Size } from 'creeps/roles/types';
 
 // Memory.roles = {};
 // Object.values(Role).map((role) => (Memory.roles[role] = Priority.NORMAL));
