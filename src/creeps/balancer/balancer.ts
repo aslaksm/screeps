@@ -74,6 +74,7 @@ export const monitorStatus = (room: Room) => {
   if (Memory.roles.harvester != Priority.NONE && shouldStopHarvest(room))
     setRoleStatus(Role.HARVESTER, Priority.NONE);
   else if (shouldResumeHarvest(room)) setRoleStatus(Role.HARVESTER, Priority.HIGH);
+  if (findAllCreeps().length < 15) setRoleStatus(Role.HARVESTER, Priority.CRITICAL);
 
   if (Memory.roles.builder != Priority.NONE && shouldStopBuild(room))
     setRoleStatus(Role.BUILDER, Priority.NONE);

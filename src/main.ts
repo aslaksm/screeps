@@ -2,9 +2,15 @@ import { ErrorMapper } from 'utils/ErrorMapper';
 import { updateHarvester, spawnHarvester, findHarvesters } from 'creeps/roles/harvester';
 import { findBuilders, updateBuilder } from 'creeps/roles/builder';
 import { findUpgraders, updateUpgrader } from 'creeps/roles/upgrader';
-import { getRoomFreeCapacity, findAllCreeps } from 'creeps/utils';
+import {
+  getRoomFreeCapacity,
+  findAllCreeps,
+  getSpawnCapacity,
+  getFirstRoom,
+  spawnCreep
+} from 'creeps/utils';
 import { monitorStatus, rebalanceCreeps, setRoleStatus } from 'creeps/balancer/balancer';
-import { Priority, Role } from 'creeps/roles/types';
+import { Priority, Role, Size } from 'creeps/roles/types';
 
 // Memory.roles = {};
 // Object.values(Role).map((role) => (Memory.roles[role] = Priority.NORMAL));
@@ -14,7 +20,10 @@ import { Priority, Role } from 'creeps/roles/types';
 
 // Determines what creeps, if any, should be spawned
 const spawnCreeps = (spawn: StructureSpawn) => {
-  if (spawn.store[RESOURCE_ENERGY] >= 150) spawnHarvester(spawn);
+  if (getSpawnCapacity(spawn, getFirstRoom()) >= 400)
+    spawnCreep(spawn, Role.HARVESTER, Size.MEDIUM);
+  else if (findAllCreeps().length < 6 && getSpawnCapacity(spawn, getFirstRoom()) >= 200)
+    spawnCreep(spawn, Role.HARVESTER, Size.SMALL);
 };
 
 const updateSpawn = (spawn: StructureSpawn) => {
@@ -45,7 +54,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
   if (Game.time % 10 === 0) {
     console.log('Rebalancing');
-    if (findAllCreeps().length < 10) setRoleStatus(Role.HARVESTER, Priority.CRITICAL);
 
     monitorStatus(Object.values(Game.rooms)[0]);
     rebalanceCreeps();

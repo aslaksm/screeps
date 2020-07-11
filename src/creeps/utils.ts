@@ -1,4 +1,4 @@
-import { Role } from './roles/types';
+import { Role, Size } from './roles/types';
 
 export const findAllCreeps = () => Object.values(Game.creeps);
 export const findCreepsByRole = (role: string) =>
@@ -17,6 +17,12 @@ export const StorableOrNull = (structure: AnyStructure) => {
     structure instanceof StructureTower ||
     structure instanceof StructureContainer
   )
+    return structure;
+  return null;
+};
+
+export const SpawnableOrNull = (structure: AnyStructure) => {
+  if (structure instanceof StructureExtension || structure instanceof StructureSpawn)
     return structure;
   return null;
 };
@@ -47,5 +53,28 @@ export const getRoomCapacity = (room: Room) => {
 
 export const getCurTime = () => Game.time.toString();
 
-// Object keys with key type inference
+// Object keys with correct type
 export const ObjectKeys = <O>(object: O) => Object.keys(object) as (keyof O)[];
+
+export const getSpawnCapacity = (spawn: StructureSpawn, room: Room) => {
+  const targets: any[] = room
+    .find(FIND_STRUCTURES)
+    .map((struct) => SpawnableOrNull(struct))
+    .filter(notEmpty);
+  return targets.map((storage) => storage.store[RESOURCE_ENERGY]).reduce((a, b) => a + b);
+};
+
+export const getFirstRoom = () => Object.values(Game.rooms)[0];
+
+export const repeatArray = <T>(array: T[], times: number) => {
+  const newArray: T[] = [];
+  for (let i = 0; i < times; i++) newArray.concat(array);
+  return newArray;
+};
+
+export const spawnCreep = (spawn: StructureSpawn, role: Role, size: Size) => {
+  const name = getCurTime();
+  const status = spawn.spawnCreep(repeatArray([WORK, MOVE, CARRY], size), name, {
+    memory: { role: role }
+  });
+};
