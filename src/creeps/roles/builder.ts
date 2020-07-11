@@ -1,4 +1,4 @@
-import { findCreepsByRole, getCurTime } from "./utils";
+import { findCreepsByRole, getCurTime } from "../utils";
 import { Role } from "./types";
 
 export const findBuilders = () => findCreepsByRole(Role.BUILDER);

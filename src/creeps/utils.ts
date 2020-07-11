@@ -1,4 +1,4 @@
-import { Role } from "./types";
+import { Role } from './roles/types';
 
 export const findAllCreeps = () => Object.values(Game.creeps);
 export const findCreepsByRole = (role: string) =>
@@ -30,7 +30,9 @@ export const getRoomFreeCapacity = (room: Room) => {
     .find(FIND_STRUCTURES)
     .map((struct) => StorableOrNull(struct))
     .filter(notEmpty);
-  return targets.map((storage) => storage.store.getFreeCapacity(RESOURCE_ENERGY)).reduce((a, b) => a + b);
+  return targets
+    .map((storage) => storage.store.getFreeCapacity(RESOURCE_ENERGY))
+    .reduce((a, b) => a + b);
 };
 
 export const getRoomCapacity = (room: Room) => {
@@ -38,7 +40,12 @@ export const getRoomCapacity = (room: Room) => {
     .find(FIND_STRUCTURES)
     .map((struct) => StorableOrNull(struct))
     .filter(notEmpty);
-  return targets.map((storage) => storage.store.getCapacity(RESOURCE_ENERGY)).reduce((a, b) => a + b);
+  return targets
+    .map((storage) => storage.store.getCapacity(RESOURCE_ENERGY))
+    .reduce((a, b) => a + b);
 };
 
 export const getCurTime = () => Game.time.toString();
+
+// Object keys with key type inference
+export const ObjectKeys = <O>(object: O) => Object.keys(object) as (keyof O)[];

@@ -1,25 +1,31 @@
-import { ErrorMapper } from "utils/ErrorMapper";
-import { updateHarvester, spawnHarvester, findHarvesters } from "creeps/harvester";
-import { findBuilders, spawnBuilder, updateBuilder } from "creeps/builder";
-import { findUpgraders, spawnUpgrader, updateUpgrader } from "creeps/upgrader";
-import { cullCreeps, getRoomFreeCapacity } from "creeps/utils";
-import { Role } from "creeps/types";
-import { balanceCreeps, Mode } from "utils";
+import { ErrorMapper } from 'utils/ErrorMapper';
+import { updateHarvester, spawnHarvester, findHarvesters } from 'creeps/roles/harvester';
+import { findBuilders, spawnBuilder, updateBuilder } from 'creeps/roles/builder';
+import { findUpgraders, spawnUpgrader, updateUpgrader } from 'creeps/roles/upgrader';
+import {
+  cullCreeps,
+  getRoomFreeCapacity,
+  getCurTime,
+  findAllCreeps,
+  ObjectKeys
+} from 'creeps/utils';
+import { Role } from 'creeps/roles/types';
+import { monitorStatus, rebalanceCreeps } from 'creeps/balancer/balancer';
+
+const maxCreeps = 100;
+
+Object.values(Role).map((role) => (Memory.roles[role] = Priority.NORMAL));
+console.log('reset roles');
 
 // Determines what creeps, if any, should be spawned
+// I'll fix this tomorrow
 const spawnCreeps = (spawn: StructureSpawn) => {
-  if (spawn.store[RESOURCE_ENERGY] > 200) {
-    // if (findHarvesters().length < 5) spawnHarvester(spawn);
-    // else if (findBuilders().length < 10) spawnBuilder(spawn);
-    // else if (findUpgraders().length < 10) spawnUpgrader(spawn);
-  }
+  if (spawn.store[RESOURCE_ENERGY] > 200) spawnHarvester(spawn);
 };
 
 const updateSpawn = (spawn: StructureSpawn) => {
   spawnCreeps(spawn);
 };
-
-let mode: Mode = Mode.NORMAL;
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
@@ -33,9 +39,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
   }
 
-  console.log("Available storage: " + getRoomFreeCapacity(Object.values(Game.rooms)[0]));
-
-  // if (!getRoomStorage(Object.values(Game.rooms)[0])) rebalanceHarvesters();
+  console.log('Available storage: ' + getRoomFreeCapacity(Object.values(Game.rooms)[0]));
 
   // Update structures
   Object.values(Game.spawns).forEach((spawn) => updateSpawn(spawn));
@@ -45,5 +49,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
   findBuilders().forEach((creep) => updateBuilder(creep));
   findUpgraders().forEach((creep) => updateUpgrader(creep));
 
-  if (Game.time % 10 === 0) mode = balanceCreeps(Object.values(Game.rooms)[0], mode);
+  if (Game.time % 10 === 0) monitorStatus(Object.values(Game.rooms)[0]);
+  if (Game.time % 10 === 0) rebalanceCreeps();
 });

@@ -1,3 +1,68 @@
-Balancing function
+State Machine
+Basically the most important thing in the entire program.
+There are a billion questions to ask, so I'll just have to explore for a while until
+the problem scope becomes more clear
 
-If all storages are full, move some creeps over to work?
+Currently I'm thinking of a state machine for the distribution of creeps in different
+roles. However, it would make sense that each role has its own state machine as well.
+This is actually already the case (poorly implemented with chained conditionals).
+
+How would it make sense to design a "general" state machine?
+This library: https://github.com/jakesgordon/javascript-state-machine/
+looks like a decent inspiration.
+
+Some thoughts:
+
+We want a state machine object, which is initialized upon start.
+We want to predefine every state, and every possible state transition.
+States are currently represented by the "mode" enum.
+We'd also like to have "Lifecycle events", or hooks that fire on
+transition from one state to another.
+
+The question on my mind: How do we determine the actual logic for transitioning
+between states?
+
+The way we currently do it is by defining conditionals from every state.
+This is very verbose and hard to keep track of.
+We check conditions like shouldStopHarvest.
+However, this condition means different things depending on the context.
+If we're in Normal mode, stopping harvest means transitioning to NoHarvest (currently)
+If we're in No Build mode, it means transitioning to upgradeOnly.
+
+A fun consequence of this design is that adding new roles is completely unfeasible,
+since it would require redefining every state. This system is fundamentally flawed.
+
+A better way (I imagine) might be to not think of this as a state machine, but rather
+as a pool of resources. If we find out that we should stop harvest, what that really
+means is that we want to free up our harvesters to work on other stuff. We don't
+really want to have an opininion on where they go, at least not in this abstraction
+layer.
+
+Let's instead say we have a routine that checks if various roles need to
+stop or resume. If a routine stops, it frees up resources into a shared pool.
+If a routine resumes, it draws some resources from that pool.
+
+In our case I imagine we'd always like to be at 100% usage (no idle creeps)
+so we'd need some way of deciding where to deallocate resources when a role should
+resume.
+
+As an aside, for our creep state machines we might want to explore coroutines/generators.
+
+Quote from https://x.st/javascript-coroutines/
+"The interesting difference between the two implementations is that the coroutine
+version involves no ticking variable, and never explicitly stores any state. Without
+using coroutines you must use a variable to store the state of whether the next call
+should tick or tock.
+This variable can only be avoided because coroutines add an entirely new form of state
+to the language, namely the state of where the coroutine is currently suspended."
+
+
+Going back to resources. Let's say we disable harvesters and want to distribute the creeps
+among the rest of the roles. First, we would set the role of each harvester creep
+to "idle" or "unassigned" or something. Then we might have a separate routine that
+checks if we have idle creeps and reassigns them (if possible). This decouples
+role deactivation and allocation of idle resources.
+Where does role activation fit into this?
+We basically need to keep track of the distribution of roles.
+When a role is activated, we should evenly distribute across all roles.
+Maybe we could weigh certain roles.
