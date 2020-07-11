@@ -1,6 +1,7 @@
 // memory extension samples
 interface CreepMemory {
   role: string;
+  size?: number;
   room?: string;
   working?: boolean;
   building?: boolean;

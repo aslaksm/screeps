@@ -61,6 +61,7 @@
   },
   "dependencies": {
     "eslint": "^7.4.0",
-    "source-map": "~0.6.1"
+    "source-map": "~0.6.1",
+    "xstate": "^4.11.0"
   }
 }

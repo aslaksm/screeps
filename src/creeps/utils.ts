@@ -76,6 +76,6 @@ export const repeatArray = <T>(array: T[], times: number) => {
 export const spawnCreep = (spawn: StructureSpawn, role: Role, size: Size) => {
   const name = getCurTime();
   return spawn.spawnCreep(repeatArray([WORK, MOVE, CARRY], size), name, {
-    memory: { role: role }
+    memory: { role, size }
   });
 };
