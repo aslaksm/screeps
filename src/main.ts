@@ -1,26 +1,20 @@
 import { ErrorMapper } from 'utils/ErrorMapper';
 import { updateHarvester, spawnHarvester, findHarvesters } from 'creeps/roles/harvester';
-import { findBuilders, spawnBuilder, updateBuilder } from 'creeps/roles/builder';
-import { findUpgraders, spawnUpgrader, updateUpgrader } from 'creeps/roles/upgrader';
-import {
-  cullCreeps,
-  getRoomFreeCapacity,
-  getCurTime,
-  findAllCreeps,
-  ObjectKeys
-} from 'creeps/utils';
-import { Role } from 'creeps/roles/types';
-import { monitorStatus, rebalanceCreeps } from 'creeps/balancer/balancer';
+import { findBuilders, updateBuilder } from 'creeps/roles/builder';
+import { findUpgraders, updateUpgrader } from 'creeps/roles/upgrader';
+import { getRoomFreeCapacity, findAllCreeps } from 'creeps/utils';
+import { monitorStatus, rebalanceCreeps, setRoleStatus } from 'creeps/balancer/balancer';
+import { Priority, Role } from 'creeps/roles/types';
 
-const maxCreeps = 100;
-
-Object.values(Role).map((role) => (Memory.roles[role] = Priority.NORMAL));
-console.log('reset roles');
+// Memory.roles = {};
+// Object.values(Role).map((role) => (Memory.roles[role] = Priority.NORMAL));
+// Memory.roles[Role.IDLE] = Priority.NONE;
+// Memory.roles[Role.HARVESTER] = Priority.HIGH;
+// console.log('reset roles');
 
 // Determines what creeps, if any, should be spawned
-// I'll fix this tomorrow
 const spawnCreeps = (spawn: StructureSpawn) => {
-  if (spawn.store[RESOURCE_ENERGY] > 200) spawnHarvester(spawn);
+  if (spawn.store[RESOURCE_ENERGY] >= 150) spawnHarvester(spawn);
 };
 
 const updateSpawn = (spawn: StructureSpawn) => {
@@ -49,6 +43,11 @@ export const loop = ErrorMapper.wrapLoop(() => {
   findBuilders().forEach((creep) => updateBuilder(creep));
   findUpgraders().forEach((creep) => updateUpgrader(creep));
 
-  if (Game.time % 10 === 0) monitorStatus(Object.values(Game.rooms)[0]);
-  if (Game.time % 10 === 0) rebalanceCreeps();
+  if (Game.time % 10 === 0) {
+    console.log('Rebalancing');
+    if (findAllCreeps().length < 10) setRoleStatus(Role.HARVESTER, Priority.CRITICAL);
+
+    monitorStatus(Object.values(Game.rooms)[0]);
+    rebalanceCreeps();
+  }
 });

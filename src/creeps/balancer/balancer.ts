@@ -4,6 +4,7 @@ import {
   getRoomCapacity,
   findAllCreeps
 } from 'creeps/utils';
+import { Role, Priority } from 'creeps/roles/types';
 
 enum Constants {
   HARVEST_THRESHOLD = 0.5
@@ -19,7 +20,7 @@ const shouldResumeHarvest = (room: Room) =>
 const shouldResumeBuild = (room: Room) => room.find(FIND_CONSTRUCTION_SITES).length > 0;
 const shouldResumeUpgrade = (room: Room) => true;
 
-const setRoleStatus = (role: Role, status: Priority) => (Memory.roles[role] = status);
+export const setRoleStatus = (role: Role, status: Priority) => (Memory.roles[role] = status);
 
 const swapRole = (from: Role, to: Role, amount: number) =>
   findCreepsByRole(from)
@@ -36,8 +37,12 @@ export const rebalanceCreeps = () => {
   );
 
   if (criticalRoles.length) {
-    // assign all creeps to critical roles
-    // return
+    const creepsPerRole = totalCreeps / criticalRoles.length;
+    const buckets = _.chunk(findAllCreeps(), creepsPerRole);
+    buckets.forEach((creeps, idx) =>
+      creeps.map((creep) => (creep.memory.role = criticalRoles[idx][0]))
+    );
+    return 0;
   }
 
   // Probably cringeworthy enum usage
@@ -53,10 +58,15 @@ export const rebalanceCreeps = () => {
     }
   );
 
-  const [negDelta, posDelta] = _.partition(roleDelta, ([role, delta]) => delta < 0);
+  const [negDelta, posDelta] = _.partition(roleDelta, ([_, delta]) => delta < 0);
 
   negDelta.forEach(([role, delta]) => swapRole(role, Role.IDLE, delta));
   posDelta.forEach(([role, delta]) => swapRole(Role.IDLE, role, delta));
+
+  // Quick patchup to assign any stragglers to harvesting
+  findCreepsByRole(Role.IDLE).map((creep) => (creep.memory.role = Role.HARVESTER));
+
+  return 0;
 };
 
 // FIXME: Roles are not currently room-based
