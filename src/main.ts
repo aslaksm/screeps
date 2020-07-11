@@ -20,10 +20,13 @@ import { Priority, Role, Size } from 'creeps/roles/types';
 
 // Determines what creeps, if any, should be spawned
 const spawnCreeps = (spawn: StructureSpawn) => {
-  if (getSpawnCapacity(spawn, getFirstRoom()) >= 400)
+  if (getSpawnCapacity(spawn, getFirstRoom()) >= 400) {
+    console.log('Spawning medium harvester');
     spawnCreep(spawn, Role.HARVESTER, Size.MEDIUM);
-  else if (findAllCreeps().length < 6 && getSpawnCapacity(spawn, getFirstRoom()) >= 200)
+  } else if (findAllCreeps().length < 6 && getSpawnCapacity(spawn, getFirstRoom()) >= 200) {
+    console.log('Spawning small harvester');
     spawnCreep(spawn, Role.HARVESTER, Size.SMALL);
+  }
 };
 
 const updateSpawn = (spawn: StructureSpawn) => {

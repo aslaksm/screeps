@@ -66,15 +66,16 @@ export const getSpawnCapacity = (spawn: StructureSpawn, room: Room) => {
 
 export const getFirstRoom = () => Object.values(Game.rooms)[0];
 
+// Should be able to do this using a reduce
 export const repeatArray = <T>(array: T[], times: number) => {
-  const newArray: T[] = [];
-  for (let i = 0; i < times; i++) newArray.concat(array);
+  let newArray: T[] = [];
+  _.times(times, () => (newArray = newArray.concat(array)));
   return newArray;
 };
 
 export const spawnCreep = (spawn: StructureSpawn, role: Role, size: Size) => {
   const name = getCurTime();
-  const status = spawn.spawnCreep(repeatArray([WORK, MOVE, CARRY], size), name, {
+  return spawn.spawnCreep(repeatArray([WORK, MOVE, CARRY], size), name, {
     memory: { role: role }
   });
 };
