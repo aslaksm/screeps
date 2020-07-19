@@ -60,6 +60,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "creepystate": "file:../creepystate",
     "eslint": "^7.4.0",
     "source-map": "~0.6.1",
     "xstate": "^4.11.0"

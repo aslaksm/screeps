@@ -39,3 +39,11 @@ context/event data.
 
 Just a thought... In the case of the harvester, each state has an activity and all events are spawned from activities, so it's entirely self-contained. Modelling this using statecharts seems kind of pointless.
 Also, I'm not quite sure how activities even make sense in the context of screeps. No async code is allowed, and we run through the entire gameloop on every tick, so creating highly complex state objects that require functions to run at set intervals might be completely infeasible.
+
+---
+
+Reading: https://www.researchgate.net/publication/252047555_Component-based_hierarchical_state_machine_-_A_reusable_and_flexible_game_AI_technology
+
+The way to go is probably to create a system that works within the confines of screeps. Components like moveTo could take a target and a maybe predicate transition function.
+
+_Obviously, an object whose implementation is dependent on a special context cannot inhabit in other heterogeneous contexts. In the case of FSM, states created by ordinary OO technique tend to be coupled with their contexts (container state, NPC,or game environment) and cannot be composed into other heterogeneous contexts_.
