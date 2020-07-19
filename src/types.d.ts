@@ -1,6 +1,7 @@
 // memory extension samples
 interface CreepMemory {
     role: string;
+    template: string;
     state?: any;
     target?: Id<any>;
     queue?: any[];

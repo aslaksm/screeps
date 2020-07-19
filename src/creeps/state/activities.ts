@@ -1,3 +1,16 @@
+export enum Activities {
+    HARVEST = 'harvest',
+    STORE = 'store',
+    UPGRADE = 'upgrade',
+    BUILD = 'build',
+    CHECK_BUILDSITES = 'checkForBuildsites',
+    MOVE_BUILD = 'moveBuild',
+    MOVE_HARVEST = 'moveHarvest',
+    MOVE_STORE = 'moveStore',
+    MOVE_UPGRADE = 'moveStore',
+    GOTO_MOVE = 'gotoMove'
+}
+
 export const harvest = (creep: Creep, state: string[]) => {
     const target = Game.getObjectById(creep.memory.target!);
     if (creep.store.getFreeCapacity() === 0) return 'STORE';
@@ -31,5 +44,14 @@ export const build = (creep: Creep, state: string[]) => {
     const target = Game.getObjectById(creep.memory.target!);
     if (creep.store[RESOURCE_ENERGY] === 0) return 'HARVEST';
     if (creep.build(target) === ERR_NOT_IN_RANGE) return 'MOVE';
+    return null;
+};
+
+export const checkForBuildsites = (creep: Creep, state: string[]) => {
+    const targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+    if (targets.length) {
+        creep.memory.target = targets[0].id;
+        return 'MOVE';
+    }
     return null;
 };
