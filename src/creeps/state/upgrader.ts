@@ -15,7 +15,31 @@ export const upgraderMachine = new Machine({
     id: 'upgrader',
     initial: 'harvesting',
     states: {
-        harvesting: harvestComponent({ UPGRADE: 'upgrading' }),
+        harvesting: {
+            on: { UPGRADE: 'upgrading' },
+            initial: 'idle',
+            states: {
+                idle: {
+                    activities: [Activities.GOTO_MOVE],
+                    on: {
+                        MOVE: 'moving'
+                    }
+                },
+                moving: {
+                    actions: [Actions.HARVEST_TARGET],
+                    activities: [Activities.MOVE_HARVEST],
+                    on: {
+                        DONEMOVING: 'harvesting'
+                    }
+                },
+                harvesting: {
+                    activities: [Activities.HARVEST],
+                    on: {
+                        MOVE: 'moving'
+                    }
+                }
+            }
+        },
         upgrading: {
             on: {
                 HARVEST: 'harvesting'
@@ -45,7 +69,7 @@ export const upgraderMachine = new Machine({
 
     activities: {
         [Activities.MOVE_HARVEST]: (creep, state) => move(1, creep, state),
-        [Activities.HARVEST]: harvest,
+        [Activities.HARVEST]: (creep, state) => harvest('UPGRADE', creep, state),
         [Activities.MOVE_UPGRADE]: (creep, state) => move(3, creep, state),
         [Activities.UPGRADE]: upgrade,
         [Activities.GOTO_MOVE]: (creep, state) => 'MOVE'

@@ -45,7 +45,7 @@ export const harvesterMachine = new Machine({
 
     activities: {
         [Activities.MOVE_HARVEST]: (creep, state) => move(1, creep, state),
-        [Activities.HARVEST]: harvest,
+        [Activities.HARVEST]: (creep, state) => harvest('STORE', creep, state),
         [Activities.MOVE_STORE]: (creep, state) => move(1, creep, state),
         [Activities.STORE]: store,
         [Activities.GOTO_MOVE]: (creep, state) => 'MOVE'

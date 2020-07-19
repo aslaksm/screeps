@@ -11,9 +11,9 @@ export enum Activities {
     GOTO_MOVE = 'gotoMove'
 }
 
-export const harvest = (creep: Creep, state: string[]) => {
+export const harvest = (next: string, creep: Creep, state: string[]) => {
     const target = Game.getObjectById(creep.memory.target!);
-    if (creep.store.getFreeCapacity() === 0) return 'STORE';
+    if (creep.store.getFreeCapacity() === 0) return next;
     if (creep.harvest(target) === ERR_NOT_IN_RANGE) return 'MOVE';
     return null;
 };
