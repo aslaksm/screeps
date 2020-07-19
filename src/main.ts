@@ -1,7 +1,7 @@
 import { ErrorMapper } from 'utils/ErrorMapper';
-import { updateHarvester, findHarvesters } from 'creeps/newRoles/harvester';
-import { findBuilders, updateBuilder } from 'creeps/roles/builder';
-import { findUpgraders, updateUpgrader } from 'creeps/roles/upgrader';
+import { updateHarvester, findHarvesters } from 'creeps/state/harvester';
+import { findBuilders, updateBuilder } from 'creeps/state/builder';
+import { findUpgraders, updateUpgrader } from 'creeps/state/upgrader';
 import {
     getRoomFreeCapacity,
     findAllCreeps,
@@ -11,6 +11,7 @@ import {
 } from 'creeps/utils';
 import { monitorStatus, rebalanceCreeps } from 'creeps/balancer/balancer';
 import { Role, Size } from 'creeps/roles/types';
+import { harvesterMachine } from 'creeps/state/harvester';
 
 // Memory.roles = {};
 // Object.values(Role).map((role) => (Memory.roles[role] = Priority.NORMAL));
@@ -47,9 +48,10 @@ export const loop = ErrorMapper.wrapLoop(() => {
     Object.values(Game.spawns).forEach((spawn) => updateSpawn(spawn));
 
     // Update creeps
+    // FIXME: Generalize, use global for machine lookup via role
     findHarvesters().forEach((creep) => updateHarvester(creep));
-    // findBuilders().forEach((creep) => updateBuilder(creep));
-    // findUpgraders().forEach((creep) => updateUpgrader(creep));
+    findBuilders().forEach((creep) => updateBuilder(creep));
+    findUpgraders().forEach((creep) => updateUpgrader(creep));
 
     if (Game.time % 10 === 0) {
         console.log('Rebalancing');

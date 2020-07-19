@@ -1,5 +1,5 @@
 import { Role, Size } from './roles/types';
-import { harvesterMachine } from 'state/harvester';
+import { harvesterMachine } from 'creeps/state/harvester';
 
 export const findAllCreeps = () => Object.values(Game.creeps);
 export const findCreepsByRole = (role: string) =>

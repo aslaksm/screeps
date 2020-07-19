@@ -1,45 +1,14 @@
 import { Machine } from 'creepystate';
+import { Role } from 'creeps/roles/types';
+import { findCreepsByRole } from 'creeps/utils';
+import { setHarvestTarget, setStoreTarget } from './actions';
+import { move, harvest, store } from './activities';
 
-// FIXME: State for when no sources exist
-const setHarvestTarget = (creep: Creep, state: string[]) => {
-    creep.memory.target = creep.room.find(FIND_SOURCES)[0].id;
-};
+export const findHarvesters = () => findCreepsByRole(Role.HARVESTER);
 
-const setStoreTarget = (creep: Creep, state: string[]) => {
-    const targets = creep.room.find(FIND_STRUCTURES, {
-        filter: (structure) => {
-            return (
-                (structure instanceof StructureExtension ||
-                    structure instanceof StructureSpawn ||
-                    structure instanceof StructureTower) &&
-                structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-            );
-        }
-    });
-    creep.memory.target = targets[0].id;
-};
-
-const harvest = (creep: Creep, state: string[]) => {
-    const target = Game.getObjectById(creep.memory.target!);
-    if (creep.store.getFreeCapacity() === 0) return 'STORE';
-    if (creep.harvest(target) === ERR_NOT_IN_RANGE) return 'MOVE';
-    return null;
-};
-
-const store = (creep: Creep, state: string[]) => {
-    const target = Game.getObjectById(creep.memory.target!);
-    // if (creep.store.getFreeCapacity() === 0) return 'STORE';
-    if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) return 'MOVE';
-    return 'HARVEST';
-};
-
-const move = (range: number, creep: Creep, state: string[]) => {
-    const target = Game.getObjectById(creep.memory.target!);
-    if (!creep.pos.inRangeTo(target.pos, range)) {
-        creep.moveTo(target);
-        return null;
-    }
-    return 'DONEMOVING';
+export const updateHarvester = (creep: Creep) => {
+    // FIXME: Explicitly assumes update returns same state if no changes
+    creep.memory.state = harvesterMachine.update(creep, creep.memory.state);
 };
 
 export const harvesterMachine = new Machine({
