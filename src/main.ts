@@ -1,9 +1,10 @@
 import { ErrorMapper } from 'utils/ErrorMapper';
 import { findAllCreeps, getRoomCapacity, getFirstRoom, getRoomFreeCapacity } from 'creeps/utils';
-import { monitorStatus, rebalanceCreeps } from 'creeps/balancer/balancer';
+import { monitorRoles, rebalanceCreeps } from 'creeps/balancer/balancer';
 import { spawnCreeps } from 'utils/spawn';
 import { Role } from 'creeps/roles/types';
 import { roleToMachine } from 'creeps/state/types';
+import { buildRoadsSpawnToSources } from 'creeps/construction/roads';
 
 // Memory.roles = {};
 // Object.values(Role).map((role) => (Memory.roles[role] = Priority.NORMAL));
@@ -23,8 +24,11 @@ export const loop = ErrorMapper.wrapLoop(() => {
     if (Game.time % 10 === 0) {
         console.log('Rebalancing');
 
-        monitorStatus(Object.values(Game.rooms)[0]);
+        monitorRoles(Object.values(Game.rooms)[0]);
         rebalanceCreeps();
+        // Update structures
+        Object.values(Game.spawns).forEach((spawn) => updateSpawn(spawn));
+
         console.log('Capacity is', getRoomFreeCapacity(getFirstRoom()));
     }
 
@@ -34,9 +38,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
             delete Memory.creeps[name];
         }
     }
-
-    // Update structures
-    Object.values(Game.spawns).forEach((spawn) => updateSpawn(spawn));
 
     // Update creeps
     findAllCreeps().forEach((creep) => {

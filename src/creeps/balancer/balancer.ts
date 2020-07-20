@@ -93,7 +93,7 @@ export const rebalanceCreeps = () => {
 };
 
 // FIXME: Roles are not currently room-based
-export const monitorStatus = (room: Room) => {
+export const monitorRoles = (room: Room) => {
     if (Memory.roles.harvester != Priority.NONE && shouldStopHarvest(room))
         setRoleStatus(Role.HARVESTER, Priority.NONE);
     else if (shouldResumeHarvest(room)) setRoleStatus(Role.HARVESTER, Priority.HIGH);
