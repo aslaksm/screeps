@@ -26,6 +26,8 @@ export const store = (creep: Creep, state: string[]) => {
 
 export const move = (range: number, creep: Creep, state: string[]) => {
     const target = Game.getObjectById(creep.memory.target!);
+    // target gone (currently only interesting for builder)
+    if (!target) return 'NOTARGET';
     if (!creep.pos.inRangeTo(target.pos, range)) {
         creep.moveTo(target);
         return null;
