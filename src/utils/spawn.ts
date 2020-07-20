@@ -3,7 +3,8 @@ import {
     getFirstRoom,
     getCurTime,
     repeatArray,
-    getTotalBodyPartsByTemplate
+    getTotalBodyPartsByTemplate,
+    findAllCreeps
 } from 'creeps/utils';
 import { Size, Role } from 'creeps/roles/types';
 import { harvesterMachine } from 'creeps/state/harvester';
@@ -42,7 +43,8 @@ export const templates: Record<Template, TemplateType> = {
 export const spawnCreeps = (spawn: StructureSpawn) => {
     const currentEnergy = getSpawnEnergy(spawn, getFirstRoom());
     if (
-        getTotalBodyPartsByTemplate(Template.WORKER) < 72 &&
+        getTotalBodyPartsByTemplate(Template.WORKER) < 90 &&
+        findAllCreeps().length < 15 &&
         currentEnergy >= getCost(templates[Template.WORKER].base)
     ) {
         const size = maxSpawnableSize(currentEnergy, Template.WORKER);

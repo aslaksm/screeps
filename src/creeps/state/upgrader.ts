@@ -15,31 +15,7 @@ export const upgraderMachine = new Machine({
     id: 'upgrader',
     initial: 'harvesting',
     states: {
-        harvesting: {
-            on: { UPGRADE: 'upgrading' },
-            initial: 'idle',
-            states: {
-                idle: {
-                    activities: [Activities.GOTO_MOVE],
-                    on: {
-                        MOVE: 'moving'
-                    }
-                },
-                moving: {
-                    actions: [Actions.HARVEST_TARGET],
-                    activities: [Activities.MOVE_HARVEST],
-                    on: {
-                        DONEMOVING: 'harvesting'
-                    }
-                },
-                harvesting: {
-                    activities: [Activities.HARVEST],
-                    on: {
-                        MOVE: 'moving'
-                    }
-                }
-            }
-        },
+        harvesting: harvestComponent({ UPGRADE: 'upgrading' }),
         upgrading: {
             on: {
                 HARVEST: 'harvesting'

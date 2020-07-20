@@ -5,6 +5,8 @@ export enum Role {
     UPGRADER = 'upgrader'
 }
 
+export type RoleNoIdle = Exclude<Role, Role.IDLE>;
+
 export enum Priority {
     NONE = 0,
     LOW = 0.5,

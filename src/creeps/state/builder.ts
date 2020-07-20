@@ -26,7 +26,8 @@ export const builderMachine = new Machine({
                     actions: [Actions.BUILD_TARGET],
                     activities: [Activities.MOVE_BUILD],
                     on: {
-                        DONEMOVING: 'building'
+                        DONEMOVING: 'building',
+                        NOTARGET: 'idle'
                     }
                 },
                 building: {

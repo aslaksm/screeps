@@ -42,6 +42,8 @@ export const upgrade = (creep: Creep, state: string[]) => {
 
 export const build = (creep: Creep, state: string[]) => {
     const target = Game.getObjectById(creep.memory.target!);
+    // build is done/cancelled
+    if (!target) return 'NOTARGET';
     if (creep.store[RESOURCE_ENERGY] === 0) return 'HARVEST';
     if (creep.build(target) === ERR_NOT_IN_RANGE) return 'MOVE';
     return null;

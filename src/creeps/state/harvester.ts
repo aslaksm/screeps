@@ -18,7 +18,8 @@ export const harvesterMachine = new Machine({
         harvesting: harvestComponent({ STORE: 'storing' }),
         storing: {
             on: {
-                HARVEST: 'harvesting'
+                HARVEST: 'harvesting',
+                NOTARGET: 'idle'
             },
             initial: 'moving',
             states: {
@@ -36,7 +37,9 @@ export const harvesterMachine = new Machine({
                     }
                 }
             }
-        }
+        },
+        // Storage is full, just wait for rebalancing
+        idle: {}
     },
     actions: {
         [Actions.HARVEST_TARGET]: setHarvestTarget,

@@ -8,10 +8,16 @@ export enum Actions {
 }
 
 // FIXME: State for when no sources exist
+// FIXME: Moron logic here
 export const setHarvestTarget = (creep: Creep, state: string[]) => {
-    let targets = creep.room.find(FIND_SOURCES);
-    targets = targets.filter((target) => countTargeted(target.id) <= 3);
-    creep.memory.target = targets[0].id;
+    const targets = creep.room.find(FIND_SOURCES);
+    let filteredTargets = targets.filter((target) => countTargeted(target.id) <= 3);
+    if (filteredTargets.length) creep.memory.target = filteredTargets[0].id;
+    else {
+        filteredTargets = targets.filter((target) => countTargeted(target.id) <= 5);
+        if (filteredTargets.length) creep.memory.target = filteredTargets[0].id;
+        else creep.memory.target = targets[0].id;
+    }
 };
 
 export const setStoreTarget = (creep: Creep, state: string[]) => {
@@ -25,7 +31,11 @@ export const setStoreTarget = (creep: Creep, state: string[]) => {
             );
         }
     });
-    creep.memory.target = targets[0].id;
+    if (targets.length) {
+        creep.memory.target = targets[0].id;
+        return null;
+    }
+    return 'NOTARGET';
 };
 
 export const setUpgradeTarget = (creep: Creep, state: string[]) => {
