@@ -1,3 +1,5 @@
+import { setStoreTarget } from './actions';
+
 export enum Activities {
     HARVEST = 'harvest',
     STORE = 'store',
@@ -21,7 +23,10 @@ export const harvest = (next: string, creep: Creep, state: string[]) => {
 export const store = (creep: Creep, state: string[]) => {
     const target = Game.getObjectById(creep.memory.target!);
     if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) return 'MOVE';
-    return 'HARVEST';
+    // If we have any energy left, try to find a new storage target.
+    if (!creep.store[RESOURCE_ENERGY] || setStoreTarget(creep, state) == 'NOTARGET')
+        return 'HARVEST';
+    return null;
 };
 
 export const move = (range: number, creep: Creep, state: string[]) => {
